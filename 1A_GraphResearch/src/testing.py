@@ -6,12 +6,6 @@ nodes = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
 for i in nodes:
     g.addVertex(i, None)
 
-"""for i in range(1, 5, 2):
-    g.addEdge(nodes[i-(i%2)],nodes[i])
-g.addEdge("E", "F")
-g.addEdge("C", "B")
-g.addEdge("B", "F")
-g.addEdge("C", "F")"""
 g.addEdge("A","B")
 g.addEdge("A","J")
 g.addEdge("A","F")
@@ -29,8 +23,5 @@ g.addEdge("H","I")
 g.addEdge("I","J")
 
 g.getGraph()
-print(g.checkDegrees())
-paths = g.find_all_H_paths("A", "J")
-paths[0] = ["J", "I", "H", "G", "F", "E", "D", "C", "B", "A"]
-#print(g._exchange(paths[0], []))
-g.runThomason(paths[0])
+path = ["J", "I", "H", "G", "F", "E", "D", "C", "B", "A"]
+g.runThomason(path)

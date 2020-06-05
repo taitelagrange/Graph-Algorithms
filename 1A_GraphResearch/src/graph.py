@@ -83,25 +83,6 @@ class Graph:
                 return False
         return True
     
-    def find_all_H_paths(self, start, end, path=[]):
-        """
-        Sourced from https://www.python.org/doc/essays/graphs/ with minor modifications.
-        ******For testing
-        """
-        path = path + [start]
-        if start == end:
-            return [path]
-        if start not in self._vertices.keys():
-            return []
-        paths = []
-        for node in self._vertices[start]:
-            if node not in path:
-                newpaths = self.find_all_H_paths( node, end, path)
-                for newpath in newpaths:
-                    if len(newpath) == self._size:
-                        paths.append(newpath)
-        return paths
-    
     def _exchange(self, path, removed):
         """
         -------------------------------------------------------
@@ -116,7 +97,6 @@ class Graph:
         """
         flag = 0
         newpath = []
-        #get edge to add
         i = 0
         newend = self._vertices[path[-1]][i]
         newedge = [path[-1], newend]
@@ -128,7 +108,7 @@ class Graph:
             
         if newedge == removed:
             #no exchange possible
-            return None, None
+            return None, None, 0
         i = 0
         
         #add new edge and remove edge
@@ -139,8 +119,6 @@ class Graph:
         for j in path[len(path):i:-1]:
             newpath.append(j)
                 
-        #print(newpath)
-        #removed.append([newpath[-1], newend])
         removed = [newpath[-1], newend]
         self._exchanges += 1
         if newpath[0] in self._vertices[newpath[-1]]:
@@ -165,30 +143,54 @@ class Graph:
             #not a valid graph for algorithm
             return
         
-        #exchangeG = Graph()
+        exchangeG = ExchangeGraph()
+        exchangeG.addVertex(path)
         removed = []
         newpath = path
         flag = 0
         while newpath is not None and not flag:
+            lastpath = newpath
             newpath, removed, flag = self._exchange(newpath, removed)
-            """"if newpath is not None:
-                exchangeG.addVertex(newpath, None)
-                exchangeG.addEdge(newpath, )"""
+            if newpath is not None:
+                exchangeG.addVertex(newpath)
+                exchangeG.addEdge([newpath, lastpath])
             print(newpath, removed)
-     
-        #create exchange graph
-        #possibly make it only store last removed edge, in case there is new path with that edge
-        #would need to check H path is not already in graph, otherwise infinite loop
+        
+        print("Path extendible to Hamiltonian Cycle:", newpath)
+        print("Number of exchanges:", self._exchanges)
+        print("Hamiltonian Cycles from Exchange Graph:", exchangeG.getCreatures())
         return
         
+    
+class ExchangeGraph:
+    def __init__(self):
+        self._vertices = []
+        self._edges = []
         
-        
-        
-        
-        
-        
-        
-        
+        return
+    
+    def addVertex(self, vertex):
+        if vertex not in self._vertices:
+            self._vertices.append(vertex)
+        return
+    
+    def addEdge(self, edge):
+        if edge not in self._edges:
+            self._edges.append(edge)
+        return
+    
+    def getCreatures(self):
+        creatures = []
+        for i in self._vertices:
+            if self.getDegree(i) % 2 != 0:
+                creatures.append(i)
+        return creatures
+    def getDegree(self, vertex):
+        d = 0
+        for i in self._edges:
+            if vertex in i:
+                d += 1
+        return d
         
         
         
